@@ -1,0 +1,812 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Misi Membaca Tepi Pantai 🏖️</title>
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- FontAwesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <!-- Google Fonts: Fredoka & Quicksand for playful tropical typography -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&family=Quicksand:wght@500;700&display=swap" rel="stylesheet">
+  <!-- Canvas Confetti -->
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+  <style>
+    body {
+      font-family: 'Quicksand', sans-serif;
+      background: linear-gradient(180deg, #38bdf8 0%, #7dd3fc 35%, #fef08a 85%, #fde047 100%);
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+    h1, h2, h3, .font-fun {
+      font-family: 'Fredoka', cursive;
+    }
+
+    /* Tropical Wave Animations */
+    .ocean-wave {
+      background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 120" preserveAspectRatio="none"><path d="M0,0 C150,90 350,-40 500,40 C650,120 900,10 1200,40 L1200,120 L0,120 Z" fill="%230284c7" opacity="0.4"></path></svg>') repeat-x;
+      animation: wave 12s linear infinite;
+    }
+    .ocean-wave-2 {
+      background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 120" preserveAspectRatio="none"><path d="M0,0 C200,50 400,0 600,60 C800,120 1000,20 1200,50 L1200,120 L0,120 Z" fill="%2338bdf8" opacity="0.6"></path></svg>') repeat-x;
+      animation: wave-reverse 8s linear infinite;
+    }
+    @keyframes wave {
+      0% { background-position-x: 0; }
+      100% { background-position-x: 1200px; }
+    }
+    @keyframes wave-reverse {
+      0% { background-position-x: 0; }
+      100% { background-position-x: -1200px; }
+    }
+
+    /* Floating Bobbing Effect */
+    .float-anim {
+      animation: float 3s ease-in-out infinite;
+    }
+    @keyframes float {
+      0%, 100% { transform: translateY(0px) rotate(0deg); }
+      50% { transform: translateY(-8px) rotate(2deg); }
+    }
+
+    /* Pulsing Record Button */
+    .recording-pulse {
+      animation: pulse-ring 1.5s cubic-bezier(0.215, 0.61, 0.355, 1) infinite;
+    }
+    @keyframes pulse-ring {
+      0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7); }
+      70% { transform: scale(1.05); box-shadow: 0 0 0 20px rgba(239, 68, 68, 0); }
+      100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
+    }
+
+    /* Wooden Board Texture Styling */
+    .wooden-sign {
+      background: #b45309;
+      background-image: linear-gradient(90deg, rgba(255,255,255,.07) 50%, transparent 50%),
+                        linear-gradient(rgba(0,0,0,.05) 50%, transparent 50%);
+      background-size: 30px 30px, 100% 4px;
+      border: 6px solid #78350f;
+      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3), inset 0 2px 4px rgba(255, 255, 255, 0.3);
+    }
+
+    /* Custom Scrollbar */
+    ::-webkit-scrollbar {
+      width: 8px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #fef08a;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #f59e0b;
+      border-radius: 10px;
+    }
+  </style>
+</head>
+<body class="flex flex-col min-h-screen justify-between relative select-none">
+
+  <!-- Background Animated Waves & Sun -->
+  <div class="fixed inset-0 pointer-events-none z-0 overflow-hidden">
+    <!-- Bright Sun -->
+    <div class="absolute top-4 right-6 w-24 h-24 sm:w-32 sm:h-32 bg-amber-300 rounded-full blur-sm opacity-90 shadow-[0_0_50px_#fde047] float-anim"></div>
+    <!-- Clouds -->
+    <i class="fa-solid fa-cloud absolute top-8 left-10 text-white/70 text-5xl sm:text-7xl float-anim" style="animation-delay: 1s;"></i>
+    <i class="fa-solid fa-cloud absolute top-16 left-1/2 text-white/60 text-4xl sm:text-6xl float-anim" style="animation-delay: 2s;"></i>
+    <!-- Ocean Wave Stripes at Bottom -->
+    <div class="ocean-wave absolute bottom-24 left-0 w-full h-24"></div>
+    <div class="ocean-wave-2 absolute bottom-20 left-0 w-full h-24"></div>
+    <!-- Sandy Beach Floor -->
+    <div class="absolute bottom-0 left-0 w-full h-24 bg-amber-200 border-t-4 border-amber-300 z-0"></div>
+  </div>
+
+  <!-- Header / Navigation Bar -->
+  <header class="relative z-10 px-4 py-3 sm:px-8 flex justify-between items-center bg-sky-600/30 backdrop-blur-md border-b border-sky-300/40 shadow-sm">
+    <div class="flex items-center space-x-3">
+      <div class="w-12 h-12 bg-amber-400 rounded-full flex items-center justify-center shadow-lg border-2 border-white text-2xl text-amber-900 float-anim">
+        🏖️
+      </div>
+      <div>
+        <h1 class="text-xl sm:text-2xl font-bold text-white drop-shadow-md tracking-wide">
+          Misi Membaca Tepi Pantai
+        </h1>
+        <p class="text-xs sm:text-sm text-sky-100 font-medium">Rakam suara & kumpul tapak sulaiman!</p>
+      </div>
+    </div>
+
+    <!-- Ambient Audio Toggle & Add Sentence Button -->
+    <div class="flex items-center space-x-2 sm:space-x-3">
+      <button id="bgmToggleBtn" onclick="toggleAmbience()" class="flex items-center space-x-2 bg-emerald-500 hover:bg-emerald-600 text-white px-3 py-2 rounded-2xl text-xs sm:text-sm font-bold shadow-md transition transform active:scale-95 border-2 border-emerald-300">
+        <i id="bgmIcon" class="fa-solid fa-volume-xmark"></i>
+        <span id="bgmText" class="hidden sm:inline">Bunyi Ombak</span>
+      </button>
+      <button onclick="openManageModal()" class="flex items-center space-x-2 bg-amber-500 hover:bg-amber-600 text-white px-3 py-2 rounded-2xl text-xs sm:text-sm font-bold shadow-md transition transform active:scale-95 border-2 border-amber-300">
+        <i class="fa-solid fa-pen-to-square"></i>
+        <span class="hidden sm:inline">Ubah Ayat</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- Main Content Container -->
+  <main class="relative z-10 flex-grow max-w-4xl w-full mx-auto px-4 py-4 flex flex-col justify-between gap-4">
+
+    <!-- Beach Progress Badge Tracker Card -->
+    <div class="bg-white/85 backdrop-blur-md rounded-3xl p-4 shadow-lg border-2 border-amber-200">
+      <div class="flex justify-between items-center mb-2">
+        <span class="font-fun text-amber-900 font-bold text-sm sm:text-base flex items-center gap-2">
+          <i class="fa-solid fa-map text-amber-600"></i> Kemajuan Membaca
+        </span>
+        <span id="progressText" class="font-fun text-xs sm:text-sm bg-amber-100 text-amber-800 font-bold px-3 py-1 rounded-full border border-amber-300">
+          0 / 0 Selesai
+        </span>
+      </div>
+
+      <!-- Shell Progress Bar -->
+      <div class="w-full bg-amber-100 rounded-full h-4 sm:h-5 p-0.5 border border-amber-300 shadow-inner relative overflow-hidden">
+        <div id="progressBar" class="bg-gradient-to-r from-amber-400 to-emerald-400 h-full rounded-full transition-all duration-500 w-0"></div>
+      </div>
+
+      <!-- Interactive Shell Badges Row -->
+      <div id="shellBadgesContainer" class="flex justify-around items-center mt-3 pt-2 border-t border-amber-100 gap-1 overflow-x-auto">
+        <!-- Dynamic Shell Badges JS -->
+      </div>
+    </div>
+
+    <!-- Main Wooden Reading Deck Signboard -->
+    <div class="wooden-sign rounded-3xl p-5 sm:p-7 text-center relative shadow-2xl transition-all">
+      <!-- Decorative Rope Loops at top -->
+      <div class="absolute -top-4 left-8 w-4 h-8 bg-amber-900/60 rounded-full border-2 border-amber-900"></div>
+      <div class="absolute -top-4 right-8 w-4 h-8 bg-amber-900/60 rounded-full border-2 border-amber-900"></div>
+
+      <!-- Card Counter Badge -->
+      <div class="inline-block bg-amber-200/90 text-amber-950 font-fun font-bold px-4 py-1 rounded-full text-xs sm:text-sm mb-3 border border-amber-400 shadow-sm">
+        <i class="fa-solid fa-umbrella-beach text-amber-700 mr-1"></i> Ayat <span id="currentCardNum">1</span> daripada <span id="totalCardNum">4</span>
+      </div>
+
+      <!-- The Sentence Reading Box -->
+      <div class="bg-amber-50/95 rounded-2xl p-4 sm:p-6 shadow-inner border-2 border-amber-200 my-2 min-h-[110px] flex items-center justify-center">
+        <p id="sentenceDisplay" class="font-fun text-xl sm:text-3xl text-amber-950 leading-relaxed font-bold">
+          "Memuat turun ayat..."
+        </p>
+      </div>
+
+      <!-- Text-To-Speech Listen Button -->
+      <div class="flex justify-center mt-3">
+        <button onclick="speakSentence()" class="bg-sky-500 hover:bg-sky-600 text-white font-fun font-bold px-4 py-2 rounded-xl text-xs sm:text-sm flex items-center gap-2 shadow-md transition transform active:scale-95 border border-sky-300">
+          <i class="fa-solid fa-volume-high text-lg"></i> Dengur Sebutan Contoh
+        </button>
+      </div>
+    </div>
+
+    <!-- Interactive Voice Recording Area -->
+    <div class="bg-white/85 backdrop-blur-md rounded-3xl p-4 sm:p-6 shadow-xl border-2 border-sky-200 flex flex-col items-center gap-4">
+      
+      <!-- Ocean Wave Canvas Audio Visualizer -->
+      <div class="w-full relative h-20 bg-gradient-to-b from-sky-900 to-sky-950 rounded-2xl overflow-hidden border-2 border-sky-400 shadow-inner">
+        <canvas id="visualizerCanvas" class="w-full h-full block"></canvas>
+        <div id="visualizerPlaceholder" class="absolute inset-0 flex items-center justify-center text-sky-300/80 font-fun text-xs sm:text-sm pointer-events-none">
+          <i class="fa-solid fa-wave-square mr-2 animate-pulse"></i> Visualizer Gelombang Suara
+        </div>
+      </div>
+
+      <!-- Big Beach Ball Record Button & Controls -->
+      <div class="flex items-center justify-center gap-4 sm:gap-6 w-full my-1">
+        
+        <!-- Previous Button -->
+        <button onclick="prevSentence()" class="w-12 h-12 rounded-full bg-amber-400 hover:bg-amber-500 text-amber-900 font-bold flex items-center justify-center shadow-lg transition active:scale-90 border-2 border-amber-200 text-lg">
+          <i class="fa-solid fa-arrow-left"></i>
+        </button>
+
+        <!-- Main Beach Ball Recording Button -->
+        <button id="recordBtn" onclick="toggleRecording()" class="relative group w-20 h-20 sm:w-24 sm:h-24 rounded-full bg-gradient-to-tr from-rose-500 via-amber-400 to-sky-400 p-1 shadow-2xl transition transform active:scale-95 border-4 border-white flex items-center justify-center">
+          <div id="recordBtnInner" class="w-full h-full rounded-full bg-rose-500 hover:bg-rose-600 flex flex-col items-center justify-center text-white font-fun font-bold shadow-inner">
+            <i id="recordIcon" class="fa-solid fa-microphone text-2xl sm:text-3xl"></i>
+            <span id="recordText" class="text-[10px] sm:text-xs mt-1">Mula Rakam</span>
+          </div>
+        </button>
+
+        <!-- Next Button -->
+        <button onclick="nextSentence()" class="w-12 h-12 rounded-full bg-amber-400 hover:bg-amber-500 text-amber-900 font-bold flex items-center justify-center shadow-lg transition active:scale-90 border-2 border-amber-200 text-lg">
+          <i class="fa-solid fa-arrow-right"></i>
+        </button>
+      </div>
+
+      <!-- Recording Timer -->
+      <div id="timerDisplay" class="font-fun text-sm font-bold text-rose-600 hidden">
+        <i class="fa-solid fa-circle text-xs animate-ping mr-1"></i> Merakam: <span id="timerVal">00:00</span>
+      </div>
+
+      <!-- Recorded Audio Playback & Action Controls -->
+      <div id="playbackSection" class="w-full flex flex-col sm:flex-row items-center justify-between gap-3 bg-sky-50 p-3 rounded-2xl border border-sky-200 hidden">
+        <!-- Standard Audio Tag -->
+        <audio id="audioPlayback" controls class="w-full sm:w-2/3 h-10 rounded-lg"></audio>
+
+        <div class="flex items-center gap-2 w-full sm:w-auto justify-end">
+          <!-- Download Recording Button -->
+          <button onclick="downloadAudio()" class="flex-1 sm:flex-none bg-emerald-500 hover:bg-emerald-600 text-white font-fun font-bold px-3 py-2 rounded-xl text-xs flex items-center justify-center gap-1 shadow-md transition active:scale-95">
+            <i class="fa-solid fa-download"></i> Muat Turun
+          </button>
+          
+          <!-- Submit & Rate Button -->
+          <button onclick="finishSentenceReading()" class="flex-1 sm:flex-none bg-amber-500 hover:bg-amber-600 text-white font-fun font-bold px-3 py-2 rounded-xl text-xs flex items-center justify-center gap-1 shadow-md transition active:scale-95">
+            <i class="fa-solid fa-star"></i> Simpan & Nilaikan
+          </button>
+        </div>
+      </div>
+
+      <!-- Starfish Rating Display for Current Sentence -->
+      <div id="ratingDisplay" class="flex items-center gap-2 mt-1">
+        <span class="font-fun text-xs text-amber-800 font-bold">Penarafan Tapak Sulaiman:</span>
+        <div id="starfishContainer" class="flex text-2xl text-amber-300">
+          <i class="fa-solid fa-star-of-life opacity-40"></i>
+          <i class="fa-solid fa-star-of-life opacity-40"></i>
+          <i class="fa-solid fa-star-of-life opacity-40"></i>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <!-- Footer Decor -->
+  <footer class="relative z-10 text-center py-2 text-xs font-bold text-amber-900/80">
+    🏖️ Misi Membaca Tepi Pantai &copy; 2026 - Rekaan Interaktif Kanak-Kanak
+  </footer>
+
+  <!-- Modal: Manage / Custom Sentences -->
+  <div id="manageModal" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+    <div class="bg-amber-50 rounded-3xl max-w-lg w-full p-6 shadow-2xl border-4 border-amber-400 flex flex-col gap-4">
+      <div class="flex justify-between items-center border-b border-amber-200 pb-3">
+        <h3 class="font-fun text-xl font-bold text-amber-900 flex items-center gap-2">
+          <i class="fa-solid fa-umbrella-beach text-amber-600"></i> Urus Senarai Ayat Membaca
+        </h3>
+        <button onclick="closeManageModal()" class="text-amber-800 hover:text-amber-950 font-bold text-xl">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+
+      <!-- Add New Sentence Box -->
+      <div class="flex gap-2">
+        <input type="text" id="newSentenceInput" placeholder="Taip ayat baharu di sini..." class="flex-1 px-4 py-2 rounded-xl border-2 border-amber-300 focus:outline-none focus:border-amber-500 font-fun text-sm">
+        <button onclick="addNewSentence()" class="bg-emerald-500 hover:bg-emerald-600 text-white font-fun font-bold px-4 py-2 rounded-xl text-sm shadow-md transition">
+          <i class="fa-solid fa-plus mr-1"></i> Tambah
+        </button>
+      </div>
+
+      <!-- List of Current Sentences -->
+      <div id="sentencesList" class="max-h-60 overflow-y-auto flex flex-col gap-2 my-2 pr-1">
+        <!-- Dynamic Items JS -->
+      </div>
+
+      <div class="flex justify-between items-center pt-2 border-t border-amber-200">
+        <button onclick="resetDefaultSentences()" class="text-xs text-rose-600 hover:underline font-bold">
+          <i class="fa-solid fa-rotate-left"></i> Set Semula Asal
+        </button>
+        <button onclick="closeManageModal()" class="bg-amber-500 hover:bg-amber-600 text-white font-fun font-bold px-5 py-2 rounded-xl text-sm shadow-md">
+          Selesai
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- JavaScript Logic -->
+  <script>
+    // --- Default Beach Context Sentences (Bahasa Melayu) ---
+    const DEFAULT_SENTENCES = [
+      "Saya suka main pasir di tepi pantai yang indah.",
+      "Ombak laut bertiup lembut dan perahu nelayan berlayar.",
+      "Ahmad mencari kerang cantik bersama kawan-kawannya.",
+      "Burung camar terbang tinggi di atas laut yang biru."
+    ];
+
+    let sentences = JSON.parse(localStorage.getItem('beach_sentences')) || [...DEFAULT_SENTENCES];
+    let currentIndex = 0;
+    let completedRecordings = JSON.parse(localStorage.getItem('beach_completed')) || {}; // { index: { rating: 3, blobUrl: '' } }
+
+    // Audio & Recording State Variables
+    let mediaRecorder = null;
+    let audioChunks = [];
+    let isRecording = false;
+    let recordedAudioBlob = null;
+    let recordedAudioUrl = null;
+    let timerInterval = null;
+    let timerSeconds = 0;
+
+    // Web Audio Visualizer Variables
+    let audioCtx = null;
+    let analyser = null;
+    let microphoneStream = null;
+    let visualizerAnimId = null;
+
+    // Ambient Ocean Sound Synthesizer Variable
+    let isAmbiencePlaying = false;
+    let ambientNoiseNode = null;
+    let ambientGainNode = null;
+
+    // DOM Elements
+    const sentenceDisplay = document.getElementById('sentenceDisplay');
+    const currentCardNum = document.getElementById('currentCardNum');
+    const totalCardNum = document.getElementById('totalCardNum');
+    const recordBtn = document.getElementById('recordBtn');
+    const recordBtnInner = document.getElementById('recordBtnInner');
+    const recordIcon = document.getElementById('recordIcon');
+    const recordText = document.getElementById('recordText');
+    const timerDisplay = document.getElementById('timerDisplay');
+    const timerVal = document.getElementById('timerVal');
+    const playbackSection = document.getElementById('playbackSection');
+    const audioPlayback = document.getElementById('audioPlayback');
+    const canvas = document.getElementById('visualizerCanvas');
+    const canvasCtx = canvas.getContext('2d');
+    const visualizerPlaceholder = document.getElementById('visualizerPlaceholder');
+    const progressBar = document.getElementById('progressBar');
+    const progressText = document.getElementById('progressText');
+    const shellBadgesContainer = document.getElementById('shellBadgesContainer');
+
+    // Canvas Auto Resize Handler
+    function resizeCanvas() {
+      canvas.width = canvas.parentElement.clientWidth;
+      canvas.height = canvas.parentElement.clientHeight;
+    }
+    window.addEventListener('resize', resizeCanvas);
+
+    // Initialize App
+    window.onload = function() {
+      resizeCanvas();
+      loadSentenceCard();
+      renderBadges();
+      drawIdleWave();
+    };
+
+    // Load Current Sentence Card UI
+    function loadSentenceCard() {
+      if (sentences.length === 0) {
+        sentences = [...DEFAULT_SENTENCES];
+      }
+      if (currentIndex >= sentences.length) currentIndex = 0;
+
+      sentenceDisplay.textContent = `"${sentences[currentIndex]}"`;
+      currentCardNum.textContent = currentIndex + 1;
+      totalCardNum.textContent = sentences.length;
+
+      // Reset Recording / Playback View for this sentence
+      playbackSection.classList.add('hidden');
+      recordedAudioBlob = null;
+      recordedAudioUrl = null;
+
+      // Update starfish rating for current sentence if completed
+      updateStarfishDisplay(completedRecordings[currentIndex] ? completedRecordings[currentIndex].rating : 0);
+      updateProgress();
+    }
+
+    // Speech Synthesis for Sentence Pronunciation
+    function speakSentence() {
+      if ('speechSynthesis' in window) {
+        window.speechSynthesis.cancel();
+        const utterance = new SpeechSynthesisUtterance(sentences[currentIndex]);
+        utterance.lang = 'ms-MY'; // Bahasa Melayu locale
+        utterance.rate = 0.85; // Slow and clear for kids
+        utterance.pitch = 1.1;
+        window.speechSynthesis.speak(utterance);
+      } else {
+        alert('Maaf, pelayar web anda tidak menyokong fungsi sebutan suara.');
+      }
+    }
+
+    // Toggle Voice Recording
+    async function toggleRecording() {
+      if (!isRecording) {
+        startRecording();
+      } else {
+        stopRecording();
+      }
+    }
+
+    async function startRecording() {
+      try {
+        const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+        microphoneStream = stream;
+
+        // Web Audio API Context Setup
+        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        analyser = audioCtx.createAnalyser();
+        analyser.fftSize = 128;
+        const source = audioCtx.createMediaStreamSource(stream);
+        source.connect(analyser);
+
+        // Media Recorder Setup
+        mediaRecorder = new MediaRecorder(stream);
+        audioChunks = [];
+
+        mediaRecorder.ondataavailable = event => {
+          if (event.data.size > 0) audioChunks.push(event.data);
+        };
+
+        mediaRecorder.onstop = () => {
+          recordedAudioBlob = new Blob(audioChunks, { type: 'audio/mp3' });
+          recordedAudioUrl = URL.createObjectURL(recordedAudioBlob);
+          audioPlayback.src = recordedAudioUrl;
+          playbackSection.classList.remove('hidden');
+        };
+
+        mediaRecorder.start();
+        isRecording = true;
+
+        // UI Updates for active recording
+        recordBtnInner.classList.remove('bg-rose-500', 'hover:bg-rose-600');
+        recordBtnInner.classList.add('bg-red-600', 'recording-pulse');
+        recordIcon.className = 'fa-solid fa-square text-2xl sm:text-3xl animate-bounce';
+        recordText.textContent = 'Berhenti';
+        timerDisplay.classList.remove('hidden');
+        visualizerPlaceholder.classList.add('hidden');
+
+        // Timer Logic
+        timerSeconds = 0;
+        timerVal.textContent = '00:00';
+        timerInterval = setInterval(() => {
+          timerSeconds++;
+          const mins = String(Math.floor(timerSeconds / 60)).padStart(2, '0');
+          const secs = String(timerSeconds % 60).padStart(2, '0');
+          timerVal.textContent = `${mins}:${secs}`;
+        }, 1000);
+
+        // Start Live Canvas Wave Visualizer
+        drawAudioVisualizer();
+
+      } catch (err) {
+        console.error("Microphone access denied or error:", err);
+        alert("Sila beri kebenaran penggunaan mikrofon untuk merakam suara.");
+      }
+    }
+
+    function stopRecording() {
+      if (mediaRecorder && isRecording) {
+        mediaRecorder.stop();
+        isRecording = false;
+
+        // Stop Mic Stream Tracks
+        if (microphoneStream) {
+          microphoneStream.getTracks().forEach(track => track.stop());
+        }
+
+        // Reset UI
+        recordBtnInner.classList.remove('bg-red-600', 'recording-pulse');
+        recordBtnInner.classList.add('bg-rose-500', 'hover:bg-rose-600');
+        recordIcon.className = 'fa-solid fa-microphone text-2xl sm:text-3xl';
+        recordText.textContent = 'Rakam Semula';
+        timerDisplay.classList.add('hidden');
+        clearInterval(timerInterval);
+
+        cancelAnimationFrame(visualizerAnimId);
+        drawIdleWave();
+      }
+    }
+
+    // Audio Canvas Wave Visualizer Animation
+    function drawAudioVisualizer() {
+      if (!isRecording) return;
+
+      visualizerAnimId = requestAnimationFrame(drawAudioVisualizer);
+
+      const bufferLength = analyser.frequencyBinCount;
+      const dataArray = new Uint8Array(bufferLength);
+      analyser.getByteFrequencyData(dataArray);
+
+      canvasCtx.fillStyle = 'rgba(12, 74, 110, 0.3)';
+      canvasCtx.fillRect(0, 0, canvas.width, canvas.height);
+
+      const barWidth = (canvas.width / bufferLength) * 2.5;
+      let barHeight;
+      let x = 0;
+
+      for (let i = 0; i < bufferLength; i++) {
+        barHeight = (dataArray[i] / 255) * canvas.height;
+
+        // Ocean Wave Gradient Color for Bars
+        const gradient = canvasCtx.createLinearGradient(0, canvas.height, 0, 0);
+        gradient.addColorStop(0, '#38bdf8');
+        gradient.addColorStop(0.5, '#fef08a');
+        gradient.addColorStop(1, '#f43f5e');
+
+        canvasCtx.fillStyle = gradient;
+        canvasCtx.beginPath();
+        canvasCtx.roundRect(x, canvas.height - barHeight, barWidth, barHeight, [4, 4, 0, 0]);
+        canvasCtx.fill();
+
+        x += barWidth + 2;
+      }
+    }
+
+    // Draw Idle Canvas Sine Wave when not recording
+    function drawIdleWave() {
+      canvasCtx.fillStyle = '#0c4a6e';
+      canvasCtx.fillRect(0, 0, canvas.width, canvas.height);
+
+      canvasCtx.beginPath();
+      canvasCtx.lineWidth = 3;
+      canvasCtx.strokeStyle = '#38bdf8';
+
+      const width = canvas.width;
+      const height = canvas.height;
+      
+      for (let x = 0; x < width; x += 5) {
+        const y = Math.sin(x * 0.03) * 8 + height / 2;
+        if (x === 0) canvasCtx.moveTo(x, y);
+        else canvasCtx.lineTo(x, y);
+      }
+      canvasCtx.stroke();
+    }
+
+    // Finish Sentence Reading (Award Starfish & Confetti)
+    function finishSentenceReading() {
+      // Set completed rating (3 starfish)
+      completedRecordings[currentIndex] = {
+        rating: 3,
+        timestamp: new Date().toISOString()
+      };
+      localStorage.setItem('beach_completed', JSON.stringify(completedRecordings));
+
+      updateStarfishDisplay(3);
+      updateProgress();
+      renderBadges();
+
+      // Trigger Seashell / Starfish Confetti & Cheer sound effect
+      triggerBeachConfetti();
+      playSynthesizedCheer();
+    }
+
+    // Starfish Rating Display Update
+    function updateStarfishDisplay(rating) {
+      const starfishContainer = document.getElementById('starfishContainer');
+      starfishContainer.innerHTML = '';
+
+      for (let i = 1; i <= 3; i++) {
+        const icon = document.createElement('i');
+        if (i <= rating) {
+          icon.className = 'fa-solid fa-star-of-life text-amber-400 drop-shadow transform scale-110 transition duration-300';
+        } else {
+          icon.className = 'fa-solid fa-star-of-life text-amber-200/50';
+        }
+        starfishContainer.appendChild(icon);
+      }
+    }
+
+    // Update Overall Beach Progress Bar
+    function updateProgress() {
+      const completedCount = Object.keys(completedRecordings).length;
+      const total = sentences.length;
+      const percent = Math.min(100, Math.round((completedCount / total) * 100));
+
+      progressBar.style.width = `${percent}%`;
+      progressText.textContent = `${completedCount} / ${total} Selesai`;
+    }
+
+    // Render Shell Badges Row
+    function renderBadges() {
+      shellBadgesContainer.innerHTML = '';
+      sentences.forEach((_, idx) => {
+        const badge = document.createElement('button');
+        badge.onclick = () => {
+          currentIndex = idx;
+          loadSentenceCard();
+        };
+
+        const isDone = completedRecordings[idx];
+        const isCurrent = idx === currentIndex;
+
+        badge.className = `flex flex-col items-center justify-center p-2 rounded-2xl transition transform active:scale-95 ${
+          isCurrent ? 'bg-amber-300 border-2 border-amber-600 shadow-md scale-105' : 'bg-amber-50/80 hover:bg-amber-100'
+        }`;
+
+        badge.innerHTML = `
+          <div class="text-xl ${isDone ? 'text-amber-500' : 'text-gray-300'}">
+            <i class="fa-solid ${isDone ? 'fa-square-check' : 'fa-sun'}"></i>
+          </div>
+          <span class="text-[10px] font-fun font-bold text-amber-900 mt-1">Ayat ${idx + 1}</span>
+        `;
+        shellBadgesContainer.appendChild(badge);
+      });
+    }
+
+    // Navigation Controls
+    function prevSentence() {
+      if (currentIndex > 0) {
+        currentIndex--;
+      } else {
+        currentIndex = sentences.length - 1;
+      }
+      loadSentenceCard();
+    }
+
+    function nextSentence() {
+      if (currentIndex < sentences.length - 1) {
+        currentIndex++;
+      } else {
+        currentIndex = 0;
+      }
+      loadSentenceCard();
+    }
+
+    // Download Audio File
+    function downloadAudio() {
+      if (!recordedAudioUrl) return;
+      const a = document.createElement('a');
+      a.style.display = 'none';
+      a.href = recordedAudioUrl;
+      a.download = `Rakaman_Pantai_Ayat_${currentIndex + 1}.mp3`;
+      document.body.appendChild(a);
+      a.click();
+      window.URL.revokeObjectURL(recordedAudioUrl);
+    }
+
+    // Synthesized Sound Effects using Web Audio API (No external sound files required)
+    function playSynthesizedCheer() {
+      const ctx = new (window.AudioContext || window.webkitAudioContext)();
+      
+      // Play a cheerful melody arpeggio
+      const notes = [261.63, 329.63, 392.00, 523.25, 659.25]; // C E G C E
+      notes.forEach((freq, index) => {
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = 'triangle';
+        osc.frequency.value = freq;
+
+        gain.gain.setValueAtTime(0.2, ctx.currentTime + index * 0.1);
+        gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + index * 0.1 + 0.3);
+
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+
+        osc.start(ctx.currentTime + index * 0.1);
+        osc.stop(ctx.currentTime + index * 0.1 + 0.3);
+      });
+    }
+
+    // Ambient Ocean Wave Sound Generator (Pink Noise Synthesizer)
+    function toggleAmbience() {
+      const bgmIcon = document.getElementById('bgmIcon');
+      const bgmBtn = document.getElementById('bgmToggleBtn');
+
+      if (!isAmbiencePlaying) {
+        startOceanAmbience();
+        isAmbiencePlaying = true;
+        bgmIcon.className = "fa-solid fa-volume-high";
+        bgmBtn.classList.remove('bg-emerald-500');
+        bgmBtn.classList.add('bg-sky-600');
+      } else {
+        stopOceanAmbience();
+        isAmbiencePlaying = false;
+        bgmIcon.className = "fa-solid fa-volume-xmark";
+        bgmBtn.classList.remove('bg-sky-600');
+        bgmBtn.classList.add('bg-emerald-500');
+      }
+    }
+
+    function startOceanAmbience() {
+      const ctx = new (window.AudioContext || window.webkitAudioContext)();
+      const bufferSize = ctx.sampleRate * 2;
+      const noiseBuffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
+      const output = noiseBuffer.getChannelData(0);
+
+      // Create pink noise for wave rumble
+      let b0=0, b1=0, b2=0, b3=0, b4=0, b5=0, b6=0;
+      for (let i = 0; i < bufferSize; i++) {
+        let white = Math.random() * 2 - 1;
+        b0 = 0.99886 * b0 + white * 0.0555179;
+        b1 = 0.99332 * b1 + white * 0.0750759;
+        b2 = 0.96900 * b2 + white * 0.1538520;
+        b3 = 0.86650 * b3 + white * 0.3104856;
+        b4 = 0.55000 * b4 + white * 0.5329522;
+        b5 = -0.7616 * b5 - white * 0.0168980;
+        output[i] = b0 + b1 + b2 + b3 + b4 + b5 + b6 + white * 0.5362;
+        output[i] *= 0.05; // Low volume
+        b6 = white * 0.115926;
+      }
+
+      ambientNoiseNode = ctx.createBufferSource();
+      ambientNoiseNode.buffer = noiseBuffer;
+      ambientNoiseNode.loop = true;
+
+      // Lowpass filter for deep wave rumble
+      const filter = ctx.createBiquadFilter();
+      filter.type = 'lowpass';
+      filter.frequency.value = 350;
+
+      ambientGainNode = ctx.createGain();
+      ambientGainNode.gain.value = 0.15;
+
+      ambientNoiseNode.connect(filter);
+      filter.connect(ambientGainNode);
+      ambientGainNode.connect(ctx.destination);
+
+      ambientNoiseNode.start();
+    }
+
+    function stopOceanAmbience() {
+      if (ambientNoiseNode) {
+        ambientNoiseNode.stop();
+        ambientNoiseNode.disconnect();
+      }
+    }
+
+    // Shell/Starfish Celebration Confetti
+    function triggerBeachConfetti() {
+      confetti({
+        particleCount: 50,
+        spread: 70,
+        origin: { y: 0.6 },
+        colors: ['#fef08a', '#38bdf8', '#f43f5e', '#fbbf24']
+      });
+    }
+
+    // Modal Sentence Management
+    function openManageModal() {
+      renderSentenceManagementList();
+      document.getElementById('manageModal').classList.remove('hidden');
+    }
+
+    function closeManageModal() {
+      document.getElementById('manageModal').classList.add('hidden');
+    }
+
+    function renderSentenceManagementList() {
+      const sentencesList = document.getElementById('sentencesList');
+      sentencesList.innerHTML = '';
+
+      sentences.forEach((s, idx) => {
+        const item = document.createElement('div');
+        item.className = 'flex justify-between items-center bg-white p-3 rounded-xl border border-amber-200 text-xs sm:text-sm font-fun';
+        item.innerHTML = `
+          <span class="text-amber-950 font-semibold flex-1 pr-2">${idx + 1}. ${s}</span>
+          <button onclick="removeSentence(${idx})" class="text-rose-500 hover:text-rose-700 p-1">
+            <i class="fa-solid fa-trash-can"></i>
+          </button>
+        `;
+        sentencesList.appendChild(item);
+      });
+    }
+
+    function addNewSentence() {
+      const input = document.getElementById('newSentenceInput');
+      const val = input.value.trim();
+      if (val) {
+        sentences.push(val);
+        localStorage.setItem('beach_sentences', JSON.stringify(sentences));
+        input.value = '';
+        renderSentenceManagementList();
+        loadSentenceCard();
+        renderBadges();
+      }
+    }
+
+    function removeSentence(idx) {
+      if (sentences.length <= 1) {
+        alert("Sekurang-kurangnya satu ayat diperlukan!");
+        return;
+      }
+      sentences.splice(idx, 1);
+      delete completedRecordings[idx];
+      localStorage.setItem('beach_sentences', JSON.stringify(sentences));
+      localStorage.setItem('beach_completed', JSON.stringify(completedRecordings));
+
+      if (currentIndex >= sentences.length) currentIndex = 0;
+      renderSentenceManagementList();
+      loadSentenceCard();
+      renderBadges();
+    }
+
+    function resetDefaultSentences() {
+      if (confirm("Adakah anda pasti untuk set semula senarai ayat asal?")) {
+        sentences = [...DEFAULT_SENTENCES];
+        completedRecordings = {};
+        localStorage.removeItem('beach_sentences');
+        localStorage.removeItem('beach_completed');
+        currentIndex = 0;
+        renderSentenceManagementList();
+        loadSentenceCard();
+        renderBadges();
+      }
+    }
+  </script>
+</body>
+</html>
